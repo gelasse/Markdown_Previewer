@@ -48,9 +48,9 @@ fcc/images/fcc_secondary.svg)\n`
         <nav id="toolbar" style={{display: 'flex', justifyContent: 'space-between', 
         backgroundColor: '#4aa3a3', boxShadow: '10px 20px 60px', border: '1px solid black'}}>
           <div id="title"><h3>Editor</h3></div>
-          <div><button onClick={this.props.toggleDisplay}><i class="fa fa-arrows-alt" aria-hidden="true"></i></button></div>
+          <div><button onClick={this.props.toggleDisplay[0]}><i class="fa fa-arrows-alt" aria-hidden="true"></i></button></div>
         </nav>
-        <textarea id="editor"  style={{ backgroundColor:'#c0d8d8', width:'590px', height:'230px'}}>
+        <textarea id="editor" value={this.props.toggleDisplay[2]} onChange={this.props.toggleDisplay[1]} style={{ backgroundColor:'#c0d8d8', width:'590px', height:'230px'}}>
         
           {template_literals}
         </textarea>
@@ -104,7 +104,7 @@ fcc/images/fcc_secondary.svg)\n`
         <nav id="toolbar" style={{display: 'flex', justifyContent: 'space-between', 
         backgroundColor: '#4aa3a3', boxShadow: '10px 20px 60px', border: '1px solid black'}}>
           <div id="title"><h3>Editor</h3></div>
-          <div><button onClick={this.props.toggleDisplay}><i class="fa fa-expand" aria-hidden="true"></i></button></div>
+          <div><button onClick={this.props.toggleDisplay[0]}><i class="fa fa-expand" aria-hidden="true"></i></button></div>
         </nav>
         <textarea id="editor"  style={{ backgroundColor:'#c0d8d8', width:'590px', height:'900px'}}>
         
@@ -138,12 +138,12 @@ class Previewer extends React.Component {
       <nav id="toolbar" style={{display: 'flex', justifyContent: 'space-between', 
     backgroundColor: '#4aa3a3', boxShadow: '10px 20px 60px', border: '1px solid black'}}>
       <div id="title"><h3>Previewer</h3></div>
-      <div><button onClick={this.props.toggleDisplay}><i class="fa fa-arrows-alt" aria-hidden="true"></i></button></div>
+      <div><button onClick={this.props.toggleDisplay[0]}><i class="fa fa-arrows-alt" aria-hidden="true"></i></button></div>
     </nav>
     <p style={{padding: '10px'}}>
-      <h1>Welcome to my React Markdown Previewer!</h1>
+      <h1>Welcome to my React Markdown Previewer!</h1>{this.props.toggleDisplay[2]}
       <hr></hr>
-      <h2>This is a sub-heading...</h2>
+      <h2>This is a sub-heading...{this.props.toggleDisplay[2]}</h2>
       <hr></hr>
       <h3>And here's some other cool stuff:</h3>
       Heres some code, {template_literals}, between 2 backticks.<br/>
@@ -217,7 +217,7 @@ class PreviewerFull extends React.Component {
       <nav id="toolbar" style={{display: 'flex', justifyContent: 'space-between', 
     backgroundColor: '#4aa3a3', boxShadow: '10px 20px 60px', border: '1px solid black'}}>
       <div id="title"><h3>Previewer</h3></div>
-      <div><button onClick={this.props.toggleDisplay}><i class="fa fa-expand" aria-hidden="true"></i></button></div>
+      <div><button onClick={this.props.toggleDisplay[0]}><i class="fa fa-expand" aria-hidden="true"></i></button></div>
     </nav>
     <p style={{padding: '10px'}}>
       <h1>Welcome to my React Markdown Previewer!</h1>
@@ -278,7 +278,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       visibilityE: true,
-      visibilityP: true
+      visibilityP: true,
+      input: ''
     }
   };
   toggleDisplayE = this.toggleDisplayE.bind(this);
@@ -293,22 +294,28 @@ class App extends React.Component {
       visibilityP: !state.visibilityP
     }))
   }
+  handleChange(event) {
+    this.setState({
+      input: event.target.value
+    })
+  }
+  
 
   render() {
     if(this.state.visibilityE && this.state.visibilityP) {
     return (<div style={{backgroundColor: '#87b5b5', padding: '20px'}}>
-      <Editor toggleDisplay={this.toggleDisplayP}/>
-      <Previewer toggleDisplay={this.toggleDisplayE}/>
+      <Editor toggleDisplay={[this.toggleDisplayP, this.handleChange]}/>
+      <Previewer toggleDisplay={[this.toggleDisplayE, this.handleChange, this.state.input]}/>
     </div>);
     }
     if(this.state.visibilityP === false) {
       return(<div style={{backgroundColor: '#87b5b5', padding: '20px'}}>
-          <EditorFull toggleDisplay={this.toggleDisplayP}/>
+          <EditorFull toggleDisplay={[this.toggleDisplayP, this.handleChange]}/>
       </div>)
     }
     if(this.state.visibilityE === false) {
       return(<div style={{backgroundColor: '#87b5b5', padding: '20px'}}>
-        <PreviewerFull toggleDisplay={this.toggleDisplayE}/>
+        <PreviewerFull toggleDisplay={[this.toggleDisplayE, this.handleChange]}/>
       </div>)
     }
   }
